@@ -56,6 +56,12 @@ public class NettyServerHandler extends ChannelHandlerAdapter {
         ctx.write(responseBuf);
     }
 
+    /**
+     * 读取数据结束
+     * 会在channelRead方法结束后调用本方法
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         //1、向客户端写入空字符串
