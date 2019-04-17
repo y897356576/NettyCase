@@ -1,4 +1,4 @@
-package nettyCase;
+package nettyCase2.cases.case_1;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -26,6 +26,7 @@ public class NettyClient {
 
     public void start() throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
+        ChannelFuture future = null;
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group);
@@ -36,10 +37,19 @@ public class NettyClient {
                     socketChannel.pipeline().addLast(new NettyClientHandler());
                 }
             });
-            ChannelFuture future = bootstrap.connect().sync();
+            future = bootstrap.connect().sync();
             future.channel().closeFuture().sync();
         } finally {
-            group.shutdownGracefully().sync();
+            //group.shutdownGracefully().sync();
+            if (null != future) {
+                if (future.channel() != null && future.channel().isOpen()) {
+                    future.channel().close();
+                }
+            }
+            System.out.println("准备重连");
+            this.start();
+            System.out.println("重连成功");
+
         }
     }
 }

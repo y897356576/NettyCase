@@ -1,9 +1,9 @@
-package nettyCase;
+package nettyCase1;
 
 /**
  * Created by admin on 2018/3/25.
  */
-public class NettyTest_2 {
+public class NettyTest_1 {
 
     public static void main(String[] args) {
         try {

@@ -1,0 +1,7 @@
+key.isWritable()  检查套接字是否已经准备好写数据（只要通道未堵塞，则一直为true，所以一般不注册OP_WRITE事件）
+
+t = client.read(byteBuffer)
+    数据流内没有数据时，read()返回的t为0
+    数据流被客户端正常关闭时，read()返回的t为-1
+    客户端正常关闭时，selector.selectedKeys()会一直获取到此客户端的可读事件，必须从服务端将通道关闭
+    t == -1 时(客户端关闭)，服务端需要手动关闭此客户端的渠道链接

@@ -1,0 +1,14 @@
+ServerSocket.accept()会一直阻塞，直到有客户发起端链接请求（Socket socket = new Socket(host, port);）
+在客户端socket发起连接并且ServerSocket.accept()后，程序直接向下走
+socket.getInputStream()与socket.getOutputStream()是非阻塞的
+inputStream.available()获取到当前输入流的内容大小，若此时流内容为空，则available()为0
+若以available()的值生成大小为0的byte[]，则inputStream.read(bytes)读取数据会读取0值
+若以available()的值生成byte[]，服务端读取数据前最好停顿几毫秒
+若inputStream.read(byte[1024])读取固定大小的的数据量，数据不足时会阻塞等待，数据量足够填满或者客户端flush时才向下走
+客户端关闭时read()返回-1
+
+
+若客户端需要不关闭输出流实现重复读写，则读取数据避免使用BufferedReader
+使用BufferedReader接收数据，如果不指定buffer大小，则readLine()使用的buffer默认8192个字符。
+在达到buffer大小之前，只有遇到"/r"、"/n"、"/r/n"才会返回，否则会阻塞等待。
+使用BufferedReader接收数据，若客户端不关闭输出流，服务端reader.ready()为true，readLine()读取到内容，但是无法赋值，导致卡死
