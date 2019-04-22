@@ -22,6 +22,7 @@ public class SelectKeyHandler {
         System.out.println("Accepted connection from " + client);
     }
 
+
     public static void doConnect(Selector selector, SelectionKey selectionKey) throws IOException {
         // 从 selectionKey 中获取当前 key 对应的 channel
         SocketChannel client = (SocketChannel)selectionKey.channel();
@@ -39,6 +40,7 @@ public class SelectKeyHandler {
         System.out.println("connected with server");
     }
 
+
     public static void doRead(SelectionKey selectionKey) throws IOException {
         SocketChannel client = (SocketChannel)selectionKey.channel();
         ByteBuffer byteBuffer = (ByteBuffer) selectionKey.attachment(); //从selectKey的附件中取出ByteBuffer实现Buffer的复用
@@ -53,16 +55,19 @@ public class SelectKeyHandler {
         while ( (t = client.read(byteBuffer)) != -1 && t != 0) {
             byteBuffer.flip();  //准备读取ByteBuffer
 
+            //byteBuffer的容量存储满了
             if(byteBuffer.limit() == byteBuffer.capacity()) {
                 content = new String(byteBuffer.array(), "utf-8");
-            } else {
+            }
+            //内容读取完成，并且byteBuffer容量未满（之前读取到的并且本次未被覆盖的内容还存在！）
+            else {
                 bytes = new byte[t];
                 byteBuffer.get(bytes);
                 content = new String(bytes, "utf-8");
             }
 
             System.out.println("read content: " + content);
-            byteBuffer.clear(); //将position、limit重置，但是不清空内容，byteBuffer.array()依旧可以拿到所有内容
+            byteBuffer.clear(); //将position、limit重置，但是不会清空内容，byteBuffer.array()依旧可以拿到所有内容
         }
 
         if (t == -1 || content.equals("close socket")) {
@@ -70,6 +75,7 @@ public class SelectKeyHandler {
             selectionKey.channel().close();
         }
     }
+
 
     public static void doWrite(SelectionKey selectionKey, String content) throws IOException {
         SocketChannel client = (SocketChannel)selectionKey.channel();
@@ -82,6 +88,8 @@ public class SelectKeyHandler {
 
         System.out.println("send content: " + new String(byteBuffer.array()));
     }
+
+
 
     public static void main(String[] args) {
         String content = "12345678901";

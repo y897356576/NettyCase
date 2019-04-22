@@ -52,12 +52,12 @@ public class NioServer {
                     if (key.isAcceptable()) {   //检查事件是否是一个新的已经就绪可以被接受的连接（serverChannel获取到新的链接请求）
                         SelectKeyHandler.doAccept(selector, key);
                     }
-                    /*if (key.isWritable()) {     //检查套接字是否已经准备好写数据（只要通道未堵塞，则一直为true）
-                        SelectKeyHandler.doWrite(key, "contentTest contentTest contentTest");
-                    }*/
                     if (key.isReadable()) {     //检查套接字是否已经准备好读数据
                         SelectKeyHandler.doRead(key);
                     }
+                    /*if (key.isWritable()) {     //检查套接字是否已经准备好写数据（只要通道未堵塞，则一直为true）
+                        SelectKeyHandler.doWrite(key, "contentTest contentTest contentTest");
+                    }*/
                 } catch (IOException ex) {
                     key.cancel();
                     ex.printStackTrace();
