@@ -1,6 +1,6 @@
 ServerSocket.accept()会一直阻塞，直到有客户发起端链接请求（Socket socket = new Socket(host, port);）
 在客户端socket发起连接并且ServerSocket.accept()后，程序直接向下走
-socket.getInputStream()与socket.getOutputStream()是非阻塞的
+socket.getInputStream()与socket.getOutputStream()是阻塞的
 inputStream.available()获取到当前输入流的内容大小，若此时流内容为空，则available()为0
 若以available()的值生成大小为0的byte[]，则inputStream.read(bytes)读取数据会读取0值
 若以available()的值生成byte[]，服务端读取数据前最好停顿几毫秒
