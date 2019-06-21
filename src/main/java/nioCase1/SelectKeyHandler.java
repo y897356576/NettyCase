@@ -70,10 +70,12 @@ public class SelectKeyHandler {
             byteBuffer.clear(); //将position、limit重置，但是不会清空内容，byteBuffer.array()依旧可以拿到所有内容
         }
 
-        if (t == -1 || content.equals("close socket")) {
+//        client.write(byteBuffer.put("Message received.".getBytes()));
+
+        /*if (t == -1 || content.equals("close socket")) {
             selectionKey.cancel();
             selectionKey.channel().close();
-        }
+        }*/
     }
 
 
@@ -83,7 +85,7 @@ public class SelectKeyHandler {
         byte[] bytes = content.getBytes();
         //此处未处理byteBuffer存储内容溢出（溢出会报错 BufferOverflowException ）
         byteBuffer.put(bytes);
-        byteBuffer.flip();
+//        byteBuffer.flip();
         client.write(byteBuffer);
 
         System.out.println("send content: " + new String(byteBuffer.array()));

@@ -1,4 +1,4 @@
-package nettyCase2;
+package nettyCase1;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;

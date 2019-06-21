@@ -1,4 +1,4 @@
-package nettyCase2;
+package nettyCase1;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;

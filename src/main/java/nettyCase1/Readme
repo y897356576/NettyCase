@@ -56,7 +56,7 @@ ChannelHandler:
 应用程序的业务逻辑通常驻留在一个或者多个ChannelHandler 中。
 
 ChannelPipeline:
-提供了ChannelHandler 链的容器；
+Pipeline本身是一个双向链表，作为 ChannelHandlerContext 链的容器；（每个ChannelHandlerContext内包含一个对应的ChannelHandler）
 当每个Channel 被创建时，它会被自动地分配到它专属的ChannelPipeline。
 
 ChannelHandler 安装到ChannelPipeline 中的过程如下所示：
@@ -69,7 +69,7 @@ ChannelHandler 安装到ChannelPipeline 中的过程如下所示：
 有两种类型的引导器：
 一种用于服务器（ServerBootstrap）
     [绑定一个端口]
-    [需要两个EventLoopGroup(可以是同一个实例)，一个处理监听Channel(负责创建新Channel)，一个处理链接Channel]
+    [需要两个EventLoopGroup(可以是同一个实例)，一个处理监听Channel(负责创建新Channel)，一个处理Channel的读写事件]
 一种用于客户端（Bootstrap）
     [绑定ip + 端口]
     [需要一个EventLoopGroup处理链接Channel]
@@ -101,6 +101,21 @@ NIO与Epoll的zore-copy:
 Netty的数据容器——ByteBuf
 Java NIO提供的ByteBuffer类使用起来过于复杂。
 ByteBuf维护了两个指针，一个读指针，一个写指针；原生态的ByteBuffer只维护了一个指针，你需要调用flip方法来切换读写的状态。
+ByteBuf分为HeapByteBuf、DirectByteBuf、CompositeByteBuf
+HeapByteBuf：
+    这是最常用的类型，ByteBuf将数据存储在JVM的堆空间，通过将数据存储在数组中实现的。
+    优点：由于数据存储在JVM的堆中可以快速创建和快速释放，并且提供了数组的直接快速访问的方法。
+    缺点：每次读写数据都要先将数据拷贝到直接缓冲区再进行传递。
+DirectByteBuf：
+    Direct Buffer在堆之外直接分配内存，直接缓冲区不会占用堆的容量。
+    优点：在使用Socket传递数据时性能很好，由于数据直接在内存中，不存在从JVM拷贝数据到直接缓冲区的过程，性能好。
+    缺点：因为Direct Buffer是直接在内存中，所以分配内存空间和释放内存比堆缓冲区更复杂和慢。
+    虽然netty的Direct Buffer有这个缺点，但是netty通过内存池来解决这个问题。直接缓冲池不支持数组访问数据，但可以通过间接的方式访问数据数组。
+    不过对于一些IO通信线程中读写缓冲时建议使用DirectByteBuffer，因为这涉及到大量的IO数据读写。对于后端的业务消息的编解码模块使用HeapByteBuffer。
+CompositeByteBuf：
+    这个是netty特有的缓冲类型。复合缓冲区就类似于一个ByteBuf的组合视图，在这个视图里面我们可以创建不同的ByteBuf(可以是不同类型的)。
+    这样，复合缓冲区就类似于一个列表，我们可以动态的往里面添加和删除其中的ByteBuf，JDK里面的ByteBuffer就没有这样的功能。
+    CompositeByteBuf 里面有个ComponentList，继承ArrayList，聚合的ByteBuf都放在ComponentList里面，最小容量为16。
 
 
 

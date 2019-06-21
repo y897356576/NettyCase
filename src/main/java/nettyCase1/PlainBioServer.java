@@ -1,4 +1,4 @@
-package nettyCase2;
+package nettyCase1;
 
 import lombok.extern.slf4j.Slf4j;
 

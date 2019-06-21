@@ -1,4 +1,4 @@
-package nettyCase1;
+package nettyCase1.cases.case_1;
 
 /**
  * Created by admin on 2018/3/25.

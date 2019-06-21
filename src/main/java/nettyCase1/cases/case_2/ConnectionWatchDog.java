@@ -1,4 +1,4 @@
-package nettyCase2.cases.case_2;
+package nettyCase1.cases.case_2;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;

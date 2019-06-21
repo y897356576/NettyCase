@@ -27,12 +27,15 @@ public class NioServer {
         //将ServerSocket注册到Selector，并设置关注ACCEPT事件
         serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
+        serverChannel = null;
+
         // warp(new byte[len]) 生成一个len容量的包含该当前byte[]内容的ByteBuffer对象
         final ByteBuffer msg = ByteBuffer.wrap("Hi!\r\n".getBytes());
 
         for (;;) {
             try {
                 int i = selector.select();  //等待需要处理的新事件；阻塞将一直持续到下一个传入事件
+                System.out.println("select event num: " + i);
                 if (i == 0) continue;
             } catch (IOException ex) {
                 ex.printStackTrace();

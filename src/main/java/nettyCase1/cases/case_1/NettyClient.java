@@ -1,4 +1,4 @@
-package nettyCase2.cases.case_1;
+package nettyCase1.cases.case_1;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -7,6 +7,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.CharsetUtil;
 
 import java.net.InetSocketAddress;
 
@@ -34,6 +39,10 @@ public class NettyClient {
             bootstrap.remoteAddress(new InetSocketAddress(ip, port));
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
+                    //Netty处理tcp黏包问题（基于分隔符）
+                    socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
+                    socketChannel.pipeline().addLast(new StringDecoder(CharsetUtil.UTF_8));
+                    socketChannel.pipeline().addLast(new StringEncoder(CharsetUtil.UTF_8));
                     socketChannel.pipeline().addLast(new NettyClientHandler());
                 }
             });

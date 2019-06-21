@@ -1,4 +1,4 @@
-package nettyCase2.cases.case_1;
+package nettyCase1.cases.case_1;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -8,6 +8,9 @@ import io.netty.util.CharsetUtil;
 
 /**
  * Created by admin on 2018/3/25.
+ *
+ * 继承 SimpleChannelInboundHandler 类，会在接收到数据后会自动 release 掉数据占用的 Bytebuffer 资源。并且继承该类需要指定数据格式。
+ * 继承 ChannelInboundHandlerAdapter 则不会自动释放，需要手动调用ReferenceCountUtil.release() 等方法进行释放。继承该类不需要指定数据格式。
  */
 public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
@@ -47,6 +50,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         }*/
     }
 
+    @Override
     protected void messageReceived(ChannelHandlerContext ctx, ByteBuf byteBuf) throws Exception {
         String message = byteBuf.toString(CharsetUtil.UTF_8);
         System.out.println("message receiver : " + message);
